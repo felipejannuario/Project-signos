@@ -1,0 +1,426 @@
+/* ==========================================================================
+   assets/css/style.css - Descubra seu Signo
+   Identidade zodiacal: azul-marinho, roxo escuro, dourado e branco.
+   Complementa o Bootstrap 5.2 (carregado antes deste arquivo).
+   Compartilhado por index.php e show_zodiac_sign.php.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Variáveis (paleta, tipografia, espaçamento)
+   -------------------------------------------------------------------------- */
+:root {
+    /* Azul-marinho */
+    --sg-marinho-900: #060b1f;
+    --sg-marinho-800: #0a1230;
+    --sg-marinho-700: #101a45;
+
+    /* Roxo escuro */
+    --sg-roxo-800: #1e1245;
+    --sg-roxo-600: #3b2477;
+    --sg-roxo-400: #7b5cc4;
+    --sg-lavanda: #c4b5f0;
+
+    /* Dourado */
+    --sg-ouro-500: #d4af37;
+    --sg-ouro-300: #f0d98a;
+    --sg-ouro-700: #a8851c;
+
+    /* Branco e textos */
+    --sg-branco: #ffffff;
+    --sg-texto: #f4f1ff;        /* texto principal (contraste ~16:1 sobre o marinho) */
+    --sg-texto-suave: #cdc7e6;  /* texto secundário (contraste ~11:1) */
+
+    /* Superfícies e bordas */
+    --sg-superficie: rgba(10, 18, 48, 0.86);
+    --sg-superficie-2: rgba(30, 18, 69, 0.55);
+    --sg-borda-ouro: rgba(212, 175, 55, 0.55);
+
+    /* Forma e espaço */
+    --sg-raio-lg: 1.25rem;
+    --sg-raio-md: 0.75rem;
+    --sg-raio-pill: 50rem;
+    --sg-espaco: 1rem;
+    --sg-sombra: 0 1rem 2.5rem rgba(2, 4, 16, 0.55);
+    --sg-sombra-suave: 0 0.4rem 1rem rgba(2, 4, 16, 0.35);
+    --sg-brilho-ouro: 0 0 0 0.25rem rgba(212, 175, 55, 0.4);
+
+    /* Tipografia (as fontes são carregadas pelo header.php) */
+    --sg-fonte-titulo: "Cinzel", "Times New Roman", Georgia, serif;
+    --sg-fonte-texto: "Lato", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   2. Base e fundo
+   Estrelas e nebulosas feitas somente com gradientes CSS (sem imagens).
+   -------------------------------------------------------------------------- */
+html {
+    background-color: var(--sg-marinho-900);
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    color: var(--sg-texto);
+    font-family: var(--sg-fonte-texto);
+    line-height: 1.6;
+    background-color: var(--sg-marinho-900);
+    background-image:
+        radial-gradient(ellipse 70% 50% at 15% 0%, rgba(59, 36, 119, 0.65), transparent 70%),
+        radial-gradient(ellipse 60% 45% at 100% 100%, rgba(30, 18, 69, 0.8), transparent 70%),
+        radial-gradient(ellipse 40% 30% at 85% 15%, rgba(212, 175, 55, 0.08), transparent 70%),
+        linear-gradient(180deg, var(--sg-marinho-700) 0%, var(--sg-marinho-900) 100%);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Camada de estrelas, atrás de todo o conteúdo */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(1px 1px at 8% 14%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 22% 62%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 31% 28%, var(--sg-ouro-300) 50%, transparent 51%),
+        radial-gradient(1px 1px at 44% 84%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 57% 9%, #fff 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 66% 47%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 78% 74%, var(--sg-ouro-300) 50%, transparent 51%),
+        radial-gradient(1px 1px at 91% 31%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 95% 90%, #fff 50%, transparent 51%),
+        radial-gradient(1px 1px at 3% 92%, #fff 50%, transparent 51%);
+    opacity: 0.7;
+    animation: sg-cintilar 7s ease-in-out infinite alternate;
+}
+
+@keyframes sg-cintilar {
+    from { opacity: 0.45; }
+    to   { opacity: 0.85; }
+}
+
+::selection {
+    background: var(--sg-ouro-500);
+    color: var(--sg-marinho-900);
+}
+
+/* --------------------------------------------------------------------------
+   3. Layout: página e cartão central
+   -------------------------------------------------------------------------- */
+.signo-page {
+    padding-top: max(1.5rem, env(safe-area-inset-top));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+}
+
+.signo-card {
+    position: relative;
+    background: var(--sg-superficie);
+    border: 1px solid var(--sg-borda-ouro);
+    border-radius: var(--sg-raio-lg);
+    box-shadow: var(--sg-sombra), 0 0 0 4px rgba(59, 36, 119, 0.28);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+/* Filete dourado no topo do cartão */
+.signo-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--sg-ouro-500), transparent);
+}
+
+/* --------------------------------------------------------------------------
+   4. Tipografia
+   -------------------------------------------------------------------------- */
+.signo-simbolos {
+    color: var(--sg-ouro-500);
+    font-size: 1.1rem;
+    letter-spacing: 0.35rem;
+    line-height: 1.9;
+    user-select: none;
+}
+
+.signo-titulo {
+    margin-bottom: var(--sg-espaco);
+    font-family: var(--sg-fonte-titulo);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: var(--sg-ouro-300);
+    text-shadow: 0 0 1.5rem rgba(212, 175, 55, 0.3);
+}
+
+.signo-texto {
+    color: var(--sg-texto-suave);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.signo-label {
+    color: var(--sg-ouro-300);
+    font-weight: 700;
+}
+
+.signo-ajuda {
+    color: var(--sg-texto-suave);
+    font-size: 0.875rem;
+}
+
+/* --------------------------------------------------------------------------
+   5. Formulário (campo de data)
+   -------------------------------------------------------------------------- */
+.signo-input {
+    min-height: 3.25rem;
+    padding: 0.7rem 1rem;
+    color: var(--sg-branco);
+    background-color: var(--sg-marinho-800);
+    border: 1px solid var(--sg-roxo-400);
+    border-radius: var(--sg-raio-md);
+    color-scheme: dark; /* ícone do calendário claro no fundo escuro */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.signo-input:hover {
+    border-color: var(--sg-lavanda);
+}
+
+.signo-input:focus {
+    color: var(--sg-branco);
+    background-color: var(--sg-marinho-700);
+    border-color: var(--sg-ouro-500);
+    box-shadow: var(--sg-brilho-ouro);
+    outline: 0;
+}
+
+/* Estado inválido (somente após o usuário interagir) */
+.signo-input:user-invalid {
+    border-color: #ff8a8a;
+    box-shadow: 0 0 0 0.25rem rgba(255, 138, 138, 0.25);
+}
+
+.signo-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   6. Botões
+   -------------------------------------------------------------------------- */
+.btn-signo {
+    --bs-btn-focus-shadow-rgb: 212, 175, 55;
+    padding: 0.85rem 1.25rem;
+    color: var(--sg-marinho-900);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(135deg, var(--sg-ouro-500) 0%, var(--sg-ouro-300) 100%);
+    border: 0;
+    border-radius: var(--sg-raio-md);
+    box-shadow: 0 0.5rem 1.25rem rgba(212, 175, 55, 0.28);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btn-signo:hover {
+    color: var(--sg-marinho-900);
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+    box-shadow: 0 0.75rem 1.75rem rgba(212, 175, 55, 0.42);
+}
+
+.btn-signo:focus-visible {
+    color: var(--sg-marinho-900);
+    outline: 3px solid var(--sg-lavanda);
+    outline-offset: 3px;
+}
+
+.btn-signo:active {
+    color: var(--sg-marinho-900);
+    transform: translateY(0);
+    filter: brightness(0.96);
+    box-shadow: 0 0.3rem 0.8rem rgba(212, 175, 55, 0.3);
+}
+
+/* Botão secundário (contorno dourado), útil para "Voltar" */
+.btn-signo-secundario {
+    padding: 0.75rem 1.25rem;
+    color: var(--sg-ouro-300);
+    font-weight: 700;
+    background: transparent;
+    border: 1px solid var(--sg-ouro-500);
+    border-radius: var(--sg-raio-md);
+    transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-signo-secundario:hover {
+    color: var(--sg-marinho-900);
+    background: var(--sg-ouro-500);
+}
+
+.btn-signo-secundario:focus-visible {
+    color: var(--sg-ouro-300);
+    outline: 3px solid var(--sg-lavanda);
+    outline-offset: 3px;
+}
+
+/* Link de texto dourado */
+.signo-link {
+    color: var(--sg-ouro-300);
+    text-decoration-color: rgba(240, 217, 138, 0.5);
+    text-underline-offset: 0.2em;
+    transition: color 0.15s ease;
+}
+
+.signo-link:hover {
+    color: var(--sg-branco);
+}
+
+.signo-link:focus-visible {
+    outline: 3px solid var(--sg-lavanda);
+    outline-offset: 3px;
+    border-radius: 0.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   7. Mensagens (alertas do Bootstrap dentro do cartão)
+   -------------------------------------------------------------------------- */
+.signo-card .alert {
+    color: var(--sg-texto);
+    background: var(--sg-superficie-2);
+    border: 1px solid var(--sg-roxo-400);
+    border-left-width: 4px;
+    border-radius: var(--sg-raio-md);
+}
+
+.signo-card .alert-info {
+    border-color: var(--sg-lavanda);
+}
+
+.signo-card .alert-warning,
+.signo-card .alert-danger {
+    border-color: var(--sg-ouro-500);
+}
+
+/* --------------------------------------------------------------------------
+   8. Cartão de resultado do signo
+   Use junto com .signo-card:  <section class="signo-card signo-resultado ...">
+   -------------------------------------------------------------------------- */
+.signo-resultado {
+    text-align: center;
+    background:
+        radial-gradient(ellipse 80% 45% at 50% 0%, rgba(59, 36, 119, 0.55), transparent 75%),
+        var(--sg-superficie);
+}
+
+.signo-resultado-data {
+    margin-bottom: 0.5rem;
+    color: var(--sg-texto-suave);
+    font-size: 0.95rem;
+}
+
+.signo-resultado-nome {
+    margin-bottom: 1rem;
+    font-family: var(--sg-fonte-titulo);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 8vw, 3.25rem);
+    line-height: 1.1;
+    color: var(--sg-ouro-300);
+    text-shadow: 0 0 2rem rgba(212, 175, 55, 0.35);
+}
+
+/* Etiqueta com o período do signo */
+.signo-resultado-periodo {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    padding: 0.35rem 1rem;
+    color: var(--sg-ouro-300);
+    font-weight: 700;
+    font-size: 0.95rem;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid var(--sg-borda-ouro);
+    border-radius: var(--sg-raio-pill);
+}
+
+/* Divisor decorativo entre período e descrição */
+.signo-divisor {
+    height: 1px;
+    margin: 0 auto 1.5rem;
+    max-width: 12rem;
+    border: 0;
+    opacity: 1;
+    background: linear-gradient(90deg, transparent, var(--sg-ouro-500), transparent);
+}
+
+.signo-resultado-descricao {
+    max-width: 60ch;
+    margin: 0 auto 2rem;
+    color: var(--sg-texto);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   9. Responsividade
+   -------------------------------------------------------------------------- */
+/* Celulares pequenos */
+@media (max-width: 575.98px) {
+    .signo-card {
+        border-radius: 1rem;
+    }
+    .signo-simbolos {
+        font-size: 1rem;
+        letter-spacing: 0.2rem;
+    }
+    .signo-texto,
+    .signo-resultado-descricao {
+        font-size: 1rem;
+    }
+}
+
+/* Celulares muito estreitos */
+@media (max-width: 359.98px) {
+    .signo-simbolos {
+        font-size: 0.9rem;
+        letter-spacing: 0.1rem;
+    }
+}
+
+/* Tablets e telas maiores */
+@media (min-width: 768px) {
+    .signo-simbolos {
+        font-size: 1.25rem;
+        letter-spacing: 0.45rem;
+    }
+}
+
+/* Celular deitado (pouca altura): evita cortar o conteúdo */
+@media (max-height: 520px) and (orientation: landscape) {
+    .signo-page {
+        align-items: flex-start !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   10. Acessibilidade: movimento reduzido
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    body::before {
+        animation: none;
+    }
+    .signo-input,
+    .btn-signo,
+    .btn-signo-secundario,
+    .signo-link {
+        transition: none;
+    }
+    .btn-signo:hover,
+    .btn-signo:active {
+        transform: none;
+    }
+}
