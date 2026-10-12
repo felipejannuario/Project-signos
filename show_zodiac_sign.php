@@ -1,31 +1,17 @@
 <?php
 declare(strict_types=1);
 
-/**
- * show_zodiac_sign.php
- * Recebe a data de nascimento (POST), valida e exibe o signo correspondente
- * a partir do arquivo signos.xml.
- */
-
 date_default_timezone_set('America/Sao_Paulo');
 
 const ARQUIVO_SIGNOS = __DIR__ . '/signos.xml';
 const ANO_MINIMO     = 1900; // mesmo limite do campo date em index.php
 
-/* ------------------------------------------------------------------ */
-/* Funções auxiliares                                                  */
-/* ------------------------------------------------------------------ */
-
-/** Escapa texto para exibição segura em HTML. */
 function e(string $valor): string
 {
     return htmlspecialchars($valor, ENT_QUOTES, 'UTF-8');
 }
 
-/**
- * Valida a data recebida (formato estrito Y-m-d).
- * Retorna [DateTimeImmutable|null, mensagem de erro|null].
- */
+
 function validarDataNascimento(mixed $valor): array
 {
     if (!is_string($valor) || trim($valor) === '') {
@@ -35,22 +21,18 @@ function validarDataNascimento(mixed $valor): array
     $valor = trim($valor);
     $msgInvalida = 'A data informada é inválida. Escolha uma data de nascimento existente.';
 
-    // 1) Formato exato AAAA-MM-DD (ano com 4 dígitos, mês e dia com 2).
     if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $valor)) {
         return [null, $msgInvalida];
     }
 
-    // 2) O "!" zera horas/minutos; o parser não deve gerar avisos ou erros.
     $data   = DateTimeImmutable::createFromFormat('!Y-m-d', $valor);
     $erros  = DateTimeImmutable::getLastErrors();
     $temErro = $erros !== false && ($erros['warning_count'] > 0 || $erros['error_count'] > 0);
 
-    // 3) Reformatar e comparar pega datas "corrigidas" (ex.: 31/02 -> 03/03).
     if ($data === false || $temErro || $data->format('Y-m-d') !== $valor) {
         return [null, $msgInvalida];
     }
 
-    // 4) Limites de negócio.
     if ((int) $data->format('Y') < ANO_MINIMO) {
         return [null, 'Informe uma data a partir do ano ' . ANO_MINIMO . '.'];
     }
@@ -61,11 +43,6 @@ function validarDataNascimento(mixed $valor): array
     return [$data, null];
 }
 
-/**
- * Converte "DD/MM" em um número comparável MMDD (ex.: 22/12 -> 1222).
- * Retorna null se o texto for inválido. Usa um ano bissexto (2024)
- * para aceitar 29/02.
- */
 function converterDiaMes(string $texto): ?int
 {
     if (!preg_match('/^(\d{1,2})\/(\d{1,2})$/', trim($texto), $m)) {
@@ -80,17 +57,13 @@ function converterDiaMes(string $texto): ?int
     return $mes * 100 + $dia;
 }
 
-/**
- * Lê signos.xml e devolve uma lista de signos já convertidos.
- * Lança RuntimeException em qualquer problema (tratado pelo chamador).
- */
 function carregarSignos(string $arquivo): array
 {
     if (!is_readable($arquivo)) {
         throw new RuntimeException('Arquivo signos.xml não encontrado ou sem permissão de leitura.');
     }
 
-    libxml_use_internal_errors(true); // evita warnings/mensagens técnicas na tela
+    libxml_use_internal_errors(true); 
     $xml = simplexml_load_file($arquivo, SimpleXMLElement::class, LIBXML_NONET);
 
     if ($xml === false) {
@@ -115,7 +88,6 @@ function carregarSignos(string $arquivo): array
         $inicio    = converterDiaMes($inicioTxt);
         $fim       = converterDiaMes($fimTxt);
 
-        // Ignora registros incompletos ou com datas inválidas.
         if ($nome === '' || $inicio === null || $fim === null) {
             continue;
         }
@@ -136,10 +108,6 @@ function carregarSignos(string $arquivo): array
     return $signos;
 }
 
-/**
- * Verifica se um dia/mês (MMDD) está dentro do período do signo.
- * Se início > fim, o período atravessa a virada do ano (Capricórnio).
- */
 function estaNoPeriodo(int $diaMes, int $inicio, int $fim): bool
 {
     if ($inicio <= $fim) {
@@ -148,7 +116,6 @@ function estaNoPeriodo(int $diaMes, int $inicio, int $fim): bool
     return $diaMes >= $inicio || $diaMes <= $fim;
 }
 
-/** Percorre os signos e devolve o que contém a data, ou null. */
 function encontrarSigno(array $signos, int $diaMes): ?array
 {
     foreach ($signos as $signo) {
@@ -159,17 +126,13 @@ function encontrarSigno(array $signos, int $diaMes): ?array
     return null;
 }
 
-/* ------------------------------------------------------------------ */
-/* Fluxo principal                                                     */
-/* ------------------------------------------------------------------ */
-
-$status   = 'erro_tecnico'; // metodo | validacao | erro_tecnico | nao_encontrado | ok
+$status   = 'erro_tecnico'; 
 $mensagem = '';
 $signo    = null;
 $dataNasc = null;
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
-    // Acesso direto pelo navegador (GET) ou outro método.
+    
     http_response_code(405);
     header('Allow: POST');
     $status   = 'metodo';
@@ -194,7 +157,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
                 $status = 'ok';
             }
         } catch (RuntimeException $ex) {
-            // Detalhe técnico vai apenas para o log do servidor (xampp\apache\logs\error.log).
+            
             error_log('[Descubra seu Signo] ' . $ex->getMessage());
             http_response_code(500);
             $status   = 'erro_tecnico';
@@ -203,9 +166,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     }
 }
 
-/* ------------------------------------------------------------------ */
-/* Apresentação                                                        */
-/* ------------------------------------------------------------------ */
 
 $pageTitle = $status === 'ok' ? 'Seu signo: ' . $signo['nome'] : 'Descubra seu Signo';
 $extraCss  = ['assets/css/style.css'];

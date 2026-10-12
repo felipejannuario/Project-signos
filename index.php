@@ -1,14 +1,9 @@
 <?php
-// index.php - Página inicial do projeto "Descubra seu Signo"
-
-// Dados enviados ao header.php (título da aba e folha de estilo própria)
 $pageTitle = 'Descubra seu Signo';
 $extraCss  = ['assets/css/style.css'];
 
-// Data de hoje no formato aceito pelo input type="date" (AAAA-MM-DD)
 $hoje = date('Y-m-d');
 
-// 1. Inclui o cabeçalho (abre <html>, <head> e <body>)
 require_once __DIR__ . '/layouts/header.php';
 ?>
 
@@ -19,7 +14,6 @@ require_once __DIR__ . '/layouts/header.php';
 
                 <section class="signo-card p-4 p-md-5" aria-labelledby="titulo-pagina">
 
-                    <!-- Faixa decorativa com os 12 símbolos zodiacais -->
                     <div class="signo-simbolos text-center mb-3" aria-hidden="true">
                         &#9800;&#xFE0E; &#9801;&#xFE0E; &#9802;&#xFE0E; &#9803;&#xFE0E;
                         &#9804;&#xFE0E; &#9805;&#xFE0E; &#9806;&#xFE0E; &#9807;&#xFE0E;
@@ -34,7 +28,7 @@ require_once __DIR__ . '/layouts/header.php';
                         faz parte da sua história.
                     </p>
 
-                    <!-- Formulário: envia por POST para show_zodiac_sign.php -->
+            
                     <form action="show_zodiac_sign.php" method="POST">
                         <div class="mb-4">
                             <label for="data_nascimento" class="form-label signo-label">
